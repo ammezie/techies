@@ -20,7 +20,7 @@
                   <i class="calendar icon"></i> {{ meetup.date | moment("dddd, MMMM Do YYYY, hA") }}
                 </span>
                 <span>
-                  <i class="location arrow icon"></i> {{ meetup.location }}
+                  <i class="map marker alternate icon"></i> {{ meetup.location }}
                 </span>
               </div>
               <div class="extra">

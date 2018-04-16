@@ -4,6 +4,7 @@ import SignUp from '@/components/SignUp'
 import LogIn from '@/components/LogIn'
 import MeetupList from '@/components/MeetupList'
 import SingleMeetup from '@/components/SingleMeetup'
+import NewMeetup from '@/components/NewMeetup'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/login',
       name: 'LogIn',
       component: LogIn
+    },
+    {
+      path: '/create',
+      name: 'NewMeetup',
+      component: NewMeetup
     },
     {
       path: '/:id',

@@ -63,9 +63,7 @@ export default {
           // redirect user
           this.$router.replace('/')
         })
-        .catch(error => {
-          console.error(error)
-        })
+        .catch(error => console.error(error))
     }
   }
 }

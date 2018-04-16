@@ -69,9 +69,7 @@ export default {
           // redirect to login page
           this.$router.replace('/')
         })
-        .catch(error => {
-          console.error(error)
-        })
+        .catch(error => console.error(error))
     }
   }
 }
