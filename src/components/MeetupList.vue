@@ -1,32 +1,46 @@
 <template>
-  <section class="section">
-    <div class="columns">
-      <div class="column is-8 is-offset-2">
-        <div class="box">
+  <div class="ui stackable relaxed grid container">
+    <div class="twelve wide column">
+      <div class="ui segment">
+        <div class="ui divided items">
           <div
-            class="columns"
+            class="item"
             v-for="(meetup, index) in meetups"
-            :key="index">
-            <div class="column is-3">
-              <p>
-                {{ meetup.date | moment("dddd, MMMM Do YYYY, hA") }}
-              </p>
-            </div>
-            <div class="column is-9">
-              <h2 class="title is-5">
+            :key="index"
+            >
+            <div class="content">
+              <router-link class="header" :to="`${meetup.id}`">
                 {{ meetup.title }}
-              </h2>
-              <h3 class="subtitle is-6">
-                {{ (meetup.attendees && meetup.attendees.length <= 1)
+              </router-link>
+              <div class="meta">
+                Organized by <strong>{{ meetup.organizer.name }}</strong>
+              </div>
+              <div class="description">
+                <span>
+                  <i class="calendar icon"></i> {{ meetup.date | moment("dddd, MMMM Do YYYY, hA") }}
+                </span>
+                <span>
+                  <i class="location arrow icon"></i> {{ meetup.location }}
+                </span>
+              </div>
+              <div class="extra">
+                <i class="thumbs up icon"></i> {{ (meetup.attendees && meetup.attendees.length <= 1)
                 ? `${meetup.attendees.length} attendee going`
                 : `${meetup.attendees.length} attendees going` }}
-              </h3>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+    <div class="four wide column">
+      <div class="ui vertical menu">
+        <router-link class="item" to="/">All Meetups</router-link>
+        <router-link class="item" to="/my-meetups">My Meetups</router-link>
+        <router-link class="item" to="/meetups-going">I'm going</router-link>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,7 +57,7 @@ export const MEETUPS_QUERY = gql`
         name
       }
       attendees {
-        name
+        id
       }
     }
   }

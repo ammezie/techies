@@ -8,14 +8,19 @@
           </h1>
         </div>
         <div class="right menu">
-          <router-link class="ui item" to="/login" v-if="!authenticated">Log In</router-link>
-          <router-link class="ui item" to="/signup" v-if="!authenticated">Sign Up</router-link>
-          <router-link class="ui item" to="/create" v-if="authenticated">Create a Meetup</router-link>
-          <a class="ui item" @click="logout" v-if="authenticated">Logout</a>
+          <template v-if="isAuthenticated">
+            <router-link class="ui item" to="/create">Create a Meetup</router-link>
+            <a class="ui item" @click="logout">Logout</a>
+          </template>
+
+          <template v-else>
+            <router-link class="ui item" to="/login">Log In</router-link>
+            <router-link class="ui item" to="/signup">Sign Up</router-link>
+          </template>
         </div>
       </div>
     </nav>
-    <div style="padding-top: 50px; padding-bottom: 50px;">
+    <div style="padding-top: 30px; padding-bottom: 30px;">
       <router-view/>
     </div>
   </div>
@@ -24,9 +29,9 @@
 <script>
 export default {
   name: 'App',
-  computed: {
-    authenticated () {
-      return !!localStorage.getItem('USER_TOKEN')
+  data () {
+    return {
+      isAuthenticated: !!localStorage.getItem('USER_TOKEN')
     }
   },
   methods: {
@@ -40,3 +45,9 @@ export default {
   }
 }
 </script>
+
+<style>
+body {
+  background-color: #f9f9f9;
+}
+</style>
