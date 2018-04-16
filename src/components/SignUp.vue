@@ -1,47 +1,35 @@
 <template>
-  <section class="section">
-    <div class="columns">
-      <div class="column is-4 is-offset-4">
-        <h2 class="title has-text-centered">Sign Up</h2>
+  <div class="ui stackable three column centered grid container">
+    <div class="column">
+      <h3 class="ui horizontal divider header">Sign Up</h3>
 
-        <form method="POST" @submit.prevent="signup">
-          <div class="field">
-            <label class="label">Name</label>
+      <form class="ui form" method="POST" @submit.prevent="signup">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" v-model="name" required>
+        </div>
 
-            <div class="control">
-              <input type="text" class="input" v-model="name">
-            </div>
-          </div>
+        <div class="field">
+          <label>Email address</label>
+          <input type="email" v-model="email" required>
+        </div>
 
-          <div class="field">
-            <label class="label">Email address</label>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" v-model="password" required>
+        </div>
 
-            <div class="control">
-              <input type="email" class="input" v-model="email">
-            </div>
-          </div>
+        <button class="fluid ui primary button">Sign Up</button>
+      </form>
 
-          <div class="field">
-            <label class="label">Password</label>
-
-            <div class="control">
-              <input type="password" class="input" v-model="password">
-            </div>
-          </div>
-
-          <div class="control">
-            <button class="button is-dark is-fullwidth">Sign Up</button>
-          </div>
-        </form>
-
-        <hr>
-
-        <p class="has-text-centered">
-          <router-link to="/login">Log In</router-link>
-        </p>
+      <div class="ui divider"></div>
+      <div class="ui column grid">
+        <div class="center aligned column">
+          Already got an account? <router-link to="/login">Log In</router-link>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -51,11 +39,6 @@ const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $name: String!) {
     signup(email: $email, password: $password, name: $name) {
       token
-      user {
-        id
-        name
-        email
-      }
     }
   }
 `

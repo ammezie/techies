@@ -11,6 +11,8 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+Vue.use(require('vue-moment'))
+
 const httpLink = new HttpLink({ uri: 'http://localhost:4000/' })
 
 const httpLinkAuth = setContext((_, { headers }) => {

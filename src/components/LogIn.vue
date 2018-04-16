@@ -1,39 +1,30 @@
 <template>
-  <section class="section">
-    <div class="columns">
-      <div class="column is-4 is-offset-4">
-        <h2 class="title has-text-centered">Log In</h2>
+  <div class="ui stackable three column centered grid container">
+    <div class="column">
+      <h3 class="ui horizontal divider header">Log In</h3>
 
-        <form method="POST" @submit.prevent="login">
-          <div class="field">
-            <label class="label">Email address</label>
+      <form class="ui form" method="POST" @submit.prevent="login">
+        <div class="field">
+          <label>Email address</label>
+          <input type="email" v-model="email" required>
+        </div>
 
-            <div class="control">
-              <input type="email" class="input" v-model="email">
-            </div>
-          </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" v-model="password" required>
+        </div>
 
-          <div class="field">
-            <label class="label">Password</label>
+        <button class="fluid ui primary button">Log In</button>
+      </form>
 
-            <div class="control">
-              <input type="password" class="input" v-model="password">
-            </div>
-          </div>
-
-          <div class="control">
-            <button class="button is-dark is-fullwidth">Log In</button>
-          </div>
-        </form>
-
-        <hr>
-
-        <p class="has-text-centered">
-          <router-link to="/signup">Sign Up</router-link>
-        </p>
+      <div class="ui divider"></div>
+      <div class="ui column grid">
+        <div class="center aligned column">
+          Don't have an account? <router-link to="/signup">Sign Up</router-link>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -43,11 +34,6 @@ const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
-      user {
-        id
-        name
-        email
-      }
     }
   }
 `
@@ -72,7 +58,6 @@ export default {
         })
         .then(response => {
           // save user token to localstorage
-          // localStorage.setItem('USER_ID', response.data.login.user.id)
           localStorage.setItem('USER_TOKEN', response.data.login.token)
 
           // redirect user
