@@ -1,6 +1,27 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+        <div class="container">
+          <div class="navbar-brand">
+            <router-link class="navbar-item" to="/">Techies</router-link>
+
+            <button class="button navbar-burger">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+
+          <div class="navbar-menu">
+            <div class="navbar-end">
+              <router-link class="navbar-item" to="/login">Log In</router-link>
+              <router-link class="navbar-item" to="/signup">Sign Up</router-link>
+              <router-link class="navbar-item" to="/create">Create a Meetup</router-link>
+              <router-link class="navbar-item" to="/logout">Logout</router-link>
+            </div>
+          </div>
+        </div>
+    </nav>
     <router-view/>
   </div>
 </template>
@@ -10,14 +31,3 @@ export default {
   name: 'App'
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

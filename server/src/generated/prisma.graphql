@@ -5,14 +5,14 @@
 # Model Types
 #
 
-type Post implements Node {
+type Meetup implements Node {
   id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  isPublished: Boolean!
+  organizer(where: UserWhereInput): User!
   title: String!
-  text: String!
-  author(where: UserWhereInput): User!
+  description: String!
+  location: String!
+  date: DateTime!
+  attendees(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
 }
 
 type User implements Node {
@@ -20,7 +20,8 @@ type User implements Node {
   email: String!
   password: String!
   name: String!
-  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+  myMeetups(where: MeetupWhereInput, orderBy: MeetupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Meetup!]
+  meetupsAttending(where: MeetupWhereInput, orderBy: MeetupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Meetup!]
 }
 
 
@@ -28,7 +29,7 @@ type User implements Node {
 # Other Types
 #
 
-type AggregatePost {
+type AggregateMeetup {
   count: Int!
 }
 
@@ -51,63 +52,10 @@ Long can represent values between -(2^63) and 2^63 - 1.
 """
 scalar Long
 
-type Mutation {
-  createPost(data: PostCreateInput!): Post!
-  createUser(data: UserCreateInput!): User!
-  updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  deletePost(where: PostWhereUniqueInput!): Post
-  deleteUser(where: UserWhereUniqueInput!): User
-  upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  updateManyPosts(data: PostUpdateInput!, where: PostWhereInput!): BatchPayload!
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput!): BatchPayload!
-  deleteManyPosts(where: PostWhereInput!): BatchPayload!
-  deleteManyUsers(where: UserWhereInput!): BatchPayload!
-}
-
-enum MutationType {
-  CREATED
-  UPDATED
-  DELETED
-}
-
-"""
-An object with an ID
-"""
-interface Node {
-  """
-  The id of the object.
-  """
-  id: ID!
-}
-
-"""
-Information about pagination in a connection.
-"""
-type PageInfo {
-  """
-  When paginating forwards, are there more items?
-  """
-  hasNextPage: Boolean!
-  """
-  When paginating backwards, are there more items?
-  """
-  hasPreviousPage: Boolean!
-  """
-  When paginating backwards, the cursor to continue.
-  """
-  startCursor: String
-  """
-  When paginating forwards, the cursor to continue.
-  """
-  endCursor: String
-}
-
 """
 A connection to a list of items.
 """
-type PostConnection {
+type MeetupConnection {
   """
   Information to aid in pagination.
   """
@@ -115,82 +63,100 @@ type PostConnection {
   """
   A list of edges.
   """
-  edges: [PostEdge]!
-  aggregate: AggregatePost!
+  edges: [MeetupEdge]!
+  aggregate: AggregateMeetup!
 }
 
-input PostCreateInput {
-  isPublished: Boolean
+input MeetupCreateInput {
   title: String!
-  text: String!
-  author: UserCreateOneWithoutPostsInput!
+  description: String!
+  location: String!
+  date: DateTime!
+  organizer: UserCreateOneWithoutMyMeetupsInput!
+  attendees: UserCreateManyWithoutMeetupsAttendingInput
 }
 
-input PostCreateManyWithoutAuthorInput {
-  create: [PostCreateWithoutAuthorInput!]
-  connect: [PostWhereUniqueInput!]
+input MeetupCreateManyWithoutAttendeesInput {
+  create: [MeetupCreateWithoutAttendeesInput!]
+  connect: [MeetupWhereUniqueInput!]
 }
 
-input PostCreateWithoutAuthorInput {
-  isPublished: Boolean
+input MeetupCreateManyWithoutOrganizerInput {
+  create: [MeetupCreateWithoutOrganizerInput!]
+  connect: [MeetupWhereUniqueInput!]
+}
+
+input MeetupCreateWithoutAttendeesInput {
   title: String!
-  text: String!
+  description: String!
+  location: String!
+  date: DateTime!
+  organizer: UserCreateOneWithoutMyMeetupsInput!
+}
+
+input MeetupCreateWithoutOrganizerInput {
+  title: String!
+  description: String!
+  location: String!
+  date: DateTime!
+  attendees: UserCreateManyWithoutMeetupsAttendingInput
 }
 
 """
 An edge in a connection.
 """
-type PostEdge {
+type MeetupEdge {
   """
   The item at the end of the edge.
   """
-  node: Post!
+  node: Meetup!
   """
   A cursor for use in pagination.
   """
   cursor: String!
 }
 
-enum PostOrderByInput {
+enum MeetupOrderByInput {
   id_ASC
   id_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  isPublished_ASC
-  isPublished_DESC
   title_ASC
   title_DESC
-  text_ASC
-  text_DESC
+  description_ASC
+  description_DESC
+  location_ASC
+  location_DESC
+  date_ASC
+  date_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
 }
 
-type PostPreviousValues {
+type MeetupPreviousValues {
   id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  isPublished: Boolean!
   title: String!
-  text: String!
+  description: String!
+  location: String!
+  date: DateTime!
 }
 
-type PostSubscriptionPayload {
+type MeetupSubscriptionPayload {
   mutation: MutationType!
-  node: Post
+  node: Meetup
   updatedFields: [String!]
-  previousValues: PostPreviousValues
+  previousValues: MeetupPreviousValues
 }
 
-input PostSubscriptionWhereInput {
+input MeetupSubscriptionWhereInput {
   """
   Logical AND on all given filters.
   """
-  AND: [PostSubscriptionWhereInput!]
+  AND: [MeetupSubscriptionWhereInput!]
   """
   Logical OR on all given filters.
   """
-  OR: [PostSubscriptionWhereInput!]
+  OR: [MeetupSubscriptionWhereInput!]
   """
   The subscription event gets dispatched when it's listed in mutation_in
   """
@@ -207,51 +173,83 @@ input PostSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: PostWhereInput
+  node: MeetupWhereInput
 }
 
-input PostUpdateInput {
-  isPublished: Boolean
+input MeetupUpdateInput {
   title: String
-  text: String
-  author: UserUpdateOneWithoutPostsInput
+  description: String
+  location: String
+  date: DateTime
+  organizer: UserUpdateOneWithoutMyMeetupsInput
+  attendees: UserUpdateManyWithoutMeetupsAttendingInput
 }
 
-input PostUpdateManyWithoutAuthorInput {
-  create: [PostCreateWithoutAuthorInput!]
-  connect: [PostWhereUniqueInput!]
-  disconnect: [PostWhereUniqueInput!]
-  delete: [PostWhereUniqueInput!]
-  update: [PostUpdateWithWhereUniqueWithoutAuthorInput!]
-  upsert: [PostUpsertWithWhereUniqueWithoutAuthorInput!]
+input MeetupUpdateManyWithoutAttendeesInput {
+  create: [MeetupCreateWithoutAttendeesInput!]
+  connect: [MeetupWhereUniqueInput!]
+  disconnect: [MeetupWhereUniqueInput!]
+  delete: [MeetupWhereUniqueInput!]
+  update: [MeetupUpdateWithWhereUniqueWithoutAttendeesInput!]
+  upsert: [MeetupUpsertWithWhereUniqueWithoutAttendeesInput!]
 }
 
-input PostUpdateWithoutAuthorDataInput {
-  isPublished: Boolean
+input MeetupUpdateManyWithoutOrganizerInput {
+  create: [MeetupCreateWithoutOrganizerInput!]
+  connect: [MeetupWhereUniqueInput!]
+  disconnect: [MeetupWhereUniqueInput!]
+  delete: [MeetupWhereUniqueInput!]
+  update: [MeetupUpdateWithWhereUniqueWithoutOrganizerInput!]
+  upsert: [MeetupUpsertWithWhereUniqueWithoutOrganizerInput!]
+}
+
+input MeetupUpdateWithoutAttendeesDataInput {
   title: String
-  text: String
+  description: String
+  location: String
+  date: DateTime
+  organizer: UserUpdateOneWithoutMyMeetupsInput
 }
 
-input PostUpdateWithWhereUniqueWithoutAuthorInput {
-  where: PostWhereUniqueInput!
-  data: PostUpdateWithoutAuthorDataInput!
+input MeetupUpdateWithoutOrganizerDataInput {
+  title: String
+  description: String
+  location: String
+  date: DateTime
+  attendees: UserUpdateManyWithoutMeetupsAttendingInput
 }
 
-input PostUpsertWithWhereUniqueWithoutAuthorInput {
-  where: PostWhereUniqueInput!
-  update: PostUpdateWithoutAuthorDataInput!
-  create: PostCreateWithoutAuthorInput!
+input MeetupUpdateWithWhereUniqueWithoutAttendeesInput {
+  where: MeetupWhereUniqueInput!
+  data: MeetupUpdateWithoutAttendeesDataInput!
 }
 
-input PostWhereInput {
+input MeetupUpdateWithWhereUniqueWithoutOrganizerInput {
+  where: MeetupWhereUniqueInput!
+  data: MeetupUpdateWithoutOrganizerDataInput!
+}
+
+input MeetupUpsertWithWhereUniqueWithoutAttendeesInput {
+  where: MeetupWhereUniqueInput!
+  update: MeetupUpdateWithoutAttendeesDataInput!
+  create: MeetupCreateWithoutAttendeesInput!
+}
+
+input MeetupUpsertWithWhereUniqueWithoutOrganizerInput {
+  where: MeetupWhereUniqueInput!
+  update: MeetupUpdateWithoutOrganizerDataInput!
+  create: MeetupCreateWithoutOrganizerInput!
+}
+
+input MeetupWhereInput {
   """
   Logical AND on all given filters.
   """
-  AND: [PostWhereInput!]
+  AND: [MeetupWhereInput!]
   """
   Logical OR on all given filters.
   """
-  OR: [PostWhereInput!]
+  OR: [MeetupWhereInput!]
   id: ID
   """
   All values that are not equal to given value.
@@ -305,69 +303,6 @@ input PostWhereInput {
   All values not ending with the given string.
   """
   id_not_ends_with: ID
-  createdAt: DateTime
-  """
-  All values that are not equal to given value.
-  """
-  createdAt_not: DateTime
-  """
-  All values that are contained in given list.
-  """
-  createdAt_in: [DateTime!]
-  """
-  All values that are not contained in given list.
-  """
-  createdAt_not_in: [DateTime!]
-  """
-  All values less than the given value.
-  """
-  createdAt_lt: DateTime
-  """
-  All values less than or equal the given value.
-  """
-  createdAt_lte: DateTime
-  """
-  All values greater than the given value.
-  """
-  createdAt_gt: DateTime
-  """
-  All values greater than or equal the given value.
-  """
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  """
-  All values that are not equal to given value.
-  """
-  updatedAt_not: DateTime
-  """
-  All values that are contained in given list.
-  """
-  updatedAt_in: [DateTime!]
-  """
-  All values that are not contained in given list.
-  """
-  updatedAt_not_in: [DateTime!]
-  """
-  All values less than the given value.
-  """
-  updatedAt_lt: DateTime
-  """
-  All values less than or equal the given value.
-  """
-  updatedAt_lte: DateTime
-  """
-  All values greater than the given value.
-  """
-  updatedAt_gt: DateTime
-  """
-  All values greater than or equal the given value.
-  """
-  updatedAt_gte: DateTime
-  isPublished: Boolean
-  """
-  All values that are not equal to given value.
-  """
-  isPublished_not: Boolean
   title: String
   """
   All values that are not equal to given value.
@@ -421,72 +356,210 @@ input PostWhereInput {
   All values not ending with the given string.
   """
   title_not_ends_with: String
-  text: String
+  description: String
   """
   All values that are not equal to given value.
   """
-  text_not: String
+  description_not: String
   """
   All values that are contained in given list.
   """
-  text_in: [String!]
+  description_in: [String!]
   """
   All values that are not contained in given list.
   """
-  text_not_in: [String!]
+  description_not_in: [String!]
   """
   All values less than the given value.
   """
-  text_lt: String
+  description_lt: String
   """
   All values less than or equal the given value.
   """
-  text_lte: String
+  description_lte: String
   """
   All values greater than the given value.
   """
-  text_gt: String
+  description_gt: String
   """
   All values greater than or equal the given value.
   """
-  text_gte: String
+  description_gte: String
   """
   All values containing the given string.
   """
-  text_contains: String
+  description_contains: String
   """
   All values not containing the given string.
   """
-  text_not_contains: String
+  description_not_contains: String
   """
   All values starting with the given string.
   """
-  text_starts_with: String
+  description_starts_with: String
   """
   All values not starting with the given string.
   """
-  text_not_starts_with: String
+  description_not_starts_with: String
   """
   All values ending with the given string.
   """
-  text_ends_with: String
+  description_ends_with: String
   """
   All values not ending with the given string.
   """
-  text_not_ends_with: String
-  author: UserWhereInput
+  description_not_ends_with: String
+  location: String
+  """
+  All values that are not equal to given value.
+  """
+  location_not: String
+  """
+  All values that are contained in given list.
+  """
+  location_in: [String!]
+  """
+  All values that are not contained in given list.
+  """
+  location_not_in: [String!]
+  """
+  All values less than the given value.
+  """
+  location_lt: String
+  """
+  All values less than or equal the given value.
+  """
+  location_lte: String
+  """
+  All values greater than the given value.
+  """
+  location_gt: String
+  """
+  All values greater than or equal the given value.
+  """
+  location_gte: String
+  """
+  All values containing the given string.
+  """
+  location_contains: String
+  """
+  All values not containing the given string.
+  """
+  location_not_contains: String
+  """
+  All values starting with the given string.
+  """
+  location_starts_with: String
+  """
+  All values not starting with the given string.
+  """
+  location_not_starts_with: String
+  """
+  All values ending with the given string.
+  """
+  location_ends_with: String
+  """
+  All values not ending with the given string.
+  """
+  location_not_ends_with: String
+  date: DateTime
+  """
+  All values that are not equal to given value.
+  """
+  date_not: DateTime
+  """
+  All values that are contained in given list.
+  """
+  date_in: [DateTime!]
+  """
+  All values that are not contained in given list.
+  """
+  date_not_in: [DateTime!]
+  """
+  All values less than the given value.
+  """
+  date_lt: DateTime
+  """
+  All values less than or equal the given value.
+  """
+  date_lte: DateTime
+  """
+  All values greater than the given value.
+  """
+  date_gt: DateTime
+  """
+  All values greater than or equal the given value.
+  """
+  date_gte: DateTime
+  organizer: UserWhereInput
+  attendees_every: UserWhereInput
+  attendees_some: UserWhereInput
+  attendees_none: UserWhereInput
 }
 
-input PostWhereUniqueInput {
+input MeetupWhereUniqueInput {
   id: ID
 }
 
+type Mutation {
+  createMeetup(data: MeetupCreateInput!): Meetup!
+  createUser(data: UserCreateInput!): User!
+  updateMeetup(data: MeetupUpdateInput!, where: MeetupWhereUniqueInput!): Meetup
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  deleteMeetup(where: MeetupWhereUniqueInput!): Meetup
+  deleteUser(where: UserWhereUniqueInput!): User
+  upsertMeetup(where: MeetupWhereUniqueInput!, create: MeetupCreateInput!, update: MeetupUpdateInput!): Meetup!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  updateManyMeetups(data: MeetupUpdateInput!, where: MeetupWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  deleteManyMeetups(where: MeetupWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""
+An object with an ID
+"""
+interface Node {
+  """
+  The id of the object.
+  """
+  id: ID!
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo {
+  """
+  When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+  """
+  When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: String
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: String
+}
+
 type Query {
-  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
+  meetups(where: MeetupWhereInput, orderBy: MeetupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Meetup]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  post(where: PostWhereUniqueInput!): Post
+  meetup(where: MeetupWhereUniqueInput!): Meetup
   user(where: UserWhereUniqueInput!): User
-  postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
+  meetupsConnection(where: MeetupWhereInput, orderBy: MeetupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MeetupConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   """
   Fetches an object given its ID
@@ -498,7 +571,7 @@ type Query {
 }
 
 type Subscription {
-  post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
+  meetup(where: MeetupSubscriptionWhereInput): MeetupSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -521,18 +594,32 @@ input UserCreateInput {
   email: String!
   password: String!
   name: String!
-  posts: PostCreateManyWithoutAuthorInput
+  myMeetups: MeetupCreateManyWithoutOrganizerInput
+  meetupsAttending: MeetupCreateManyWithoutAttendeesInput
 }
 
-input UserCreateOneWithoutPostsInput {
-  create: UserCreateWithoutPostsInput
+input UserCreateManyWithoutMeetupsAttendingInput {
+  create: [UserCreateWithoutMeetupsAttendingInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneWithoutMyMeetupsInput {
+  create: UserCreateWithoutMyMeetupsInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutPostsInput {
+input UserCreateWithoutMeetupsAttendingInput {
   email: String!
   password: String!
   name: String!
+  myMeetups: MeetupCreateManyWithoutOrganizerInput
+}
+
+input UserCreateWithoutMyMeetupsInput {
+  email: String!
+  password: String!
+  name: String!
+  meetupsAttending: MeetupCreateManyWithoutAttendeesInput
 }
 
 """
@@ -610,26 +697,55 @@ input UserUpdateInput {
   email: String
   password: String
   name: String
-  posts: PostUpdateManyWithoutAuthorInput
+  myMeetups: MeetupUpdateManyWithoutOrganizerInput
+  meetupsAttending: MeetupUpdateManyWithoutAttendeesInput
 }
 
-input UserUpdateOneWithoutPostsInput {
-  create: UserCreateWithoutPostsInput
+input UserUpdateManyWithoutMeetupsAttendingInput {
+  create: [UserCreateWithoutMeetupsAttendingInput!]
+  connect: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutMeetupsAttendingInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutMeetupsAttendingInput!]
+}
+
+input UserUpdateOneWithoutMyMeetupsInput {
+  create: UserCreateWithoutMyMeetupsInput
   connect: UserWhereUniqueInput
   delete: Boolean
-  update: UserUpdateWithoutPostsDataInput
-  upsert: UserUpsertWithoutPostsInput
+  update: UserUpdateWithoutMyMeetupsDataInput
+  upsert: UserUpsertWithoutMyMeetupsInput
 }
 
-input UserUpdateWithoutPostsDataInput {
+input UserUpdateWithoutMeetupsAttendingDataInput {
   email: String
   password: String
   name: String
+  myMeetups: MeetupUpdateManyWithoutOrganizerInput
 }
 
-input UserUpsertWithoutPostsInput {
-  update: UserUpdateWithoutPostsDataInput!
-  create: UserCreateWithoutPostsInput!
+input UserUpdateWithoutMyMeetupsDataInput {
+  email: String
+  password: String
+  name: String
+  meetupsAttending: MeetupUpdateManyWithoutAttendeesInput
+}
+
+input UserUpdateWithWhereUniqueWithoutMeetupsAttendingInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutMeetupsAttendingDataInput!
+}
+
+input UserUpsertWithoutMyMeetupsInput {
+  update: UserUpdateWithoutMyMeetupsDataInput!
+  create: UserCreateWithoutMyMeetupsInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutMeetupsAttendingInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutMeetupsAttendingDataInput!
+  create: UserCreateWithoutMeetupsAttendingInput!
 }
 
 input UserWhereInput {
@@ -853,9 +969,12 @@ input UserWhereInput {
   All values not ending with the given string.
   """
   name_not_ends_with: String
-  posts_every: PostWhereInput
-  posts_some: PostWhereInput
-  posts_none: PostWhereInput
+  myMeetups_every: MeetupWhereInput
+  myMeetups_some: MeetupWhereInput
+  myMeetups_none: MeetupWhereInput
+  meetupsAttending_every: MeetupWhereInput
+  meetupsAttending_some: MeetupWhereInput
+  meetupsAttending_none: MeetupWhereInput
 }
 
 input UserWhereUniqueInput {

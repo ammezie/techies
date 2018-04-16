@@ -1,11 +1,11 @@
-type Post {
+type Meetup {
   id: ID! @unique
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  isPublished: Boolean! @default(value: "false")
+  organizer: User! @relation(name: "UserEvents")
   title: String!
-  text: String!
-  author: User!
+  description: String!
+  location: String!
+  date: DateTime!
+  attendees: [User!]! @relation(name: "EventAttendees")
 }
 
 type User {
@@ -13,5 +13,6 @@ type User {
   email: String! @unique
   password: String!
   name: String!
-  posts: [Post!]!
+  myMeetups: [Meetup!]! @relation(name: "UserEvents")
+  meetupsAttending: [Meetup!]! @relation(name: "EventAttendees")
 }
