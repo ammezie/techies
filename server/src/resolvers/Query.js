@@ -5,17 +5,16 @@ const Query = {
     return ctx.db.query.meetups({ orderBy: 'date_DESC' }, info)
   },
 
-  // drafts (parent, args, ctx, info) {
+  // meetupsAttending (parent, args, ctx, info) {
   //   const id = getUserId(ctx)
 
   //   const where = {
-  //     isPublished: false,
-  //     author: {
+  //     attendees: {
   //       id
   //     }
   //   }
 
-  //   return ctx.db.query.posts({ where }, info)
+  //   return ctx.db.query.meetup({ where }, info)
   // },
 
   meetup (parent, { id }, ctx, info) {

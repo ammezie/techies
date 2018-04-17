@@ -31,51 +31,9 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
+import { CREATE_MEETUP_MUTATION } from '@/graphql/mutations'
+import { MEETUPS_QUERY } from '@/graphql/queries'
 
-export const CREATE_MEETUP_MUTATION = gql`
-  mutation CreateMeetupMutation(
-    $title: String!
-    $location: String!
-    $date: DateTime!
-    $description: String!
-  ) {
-    createMeetup(
-      title: $title
-      location: $location
-      date: $date
-      description: $description
-    ) {
-      id
-      title
-      date
-      location
-      organizer {
-        name
-      }
-      attendees {
-        id
-      }
-    }
-  }
-`
-
-export const MEETUPS_QUERY = gql`
-  query MeetupsQuery {
-    meetups {
-      id
-      title
-      date
-      location
-      organizer {
-        name
-      }
-      attendees {
-        id
-      }
-    }
-  }
-`
 export default {
   name: 'NewMeetup',
   data () {

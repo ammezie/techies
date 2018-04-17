@@ -2,8 +2,9 @@
 
 type Query {
   meetups: [Meetup!]!
-  meetup(id: ID!): Meetup
-  me: User
+  meetup(id: ID!): Meetup!
+  me: User!
+  # meetupsAttending: Meetup!
 }
 
 type Mutation {
@@ -23,5 +24,6 @@ type User {
   id: ID!
   email: String!
   name: String!
-  meetups: [Meetup!]!
+  myMeetups: [Meetup!]!
+  meetupsAttending: [Meetup!]!
 }

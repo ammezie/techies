@@ -8,39 +8,59 @@
           </h1>
         </div>
         <div class="right menu">
-          <template v-if="isAuthenticated">
-            <router-link class="ui item" to="/create">Create a Meetup</router-link>
-            <a class="ui item" @click="logout">Logout</a>
-          </template>
-
-          <template v-else>
-            <router-link class="ui item" to="/login">Log In</router-link>
-            <router-link class="ui item" to="/signup">Sign Up</router-link>
-          </template>
+          <router-link class="ui item" to="/create">Create a Meetup</router-link>
         </div>
       </div>
     </nav>
     <div style="padding-top: 30px; padding-bottom: 30px;">
-      <router-view/>
+      <router-view :me="me"/>
     </div>
   </div>
 </template>
 
 <script>
+import gql from 'graphql-tag'
+
+export const ME_QUERY = gql`
+  query MeQuery {
+    me {
+      id
+      name
+      myMeetups {
+        id
+        title
+        date
+        location
+        attendees {
+          id
+        }
+      }
+      meetupsAttending {
+        id
+        title
+        date
+        location
+        organizer {
+          name
+        }
+        attendees {
+          id
+        }
+      }
+    }
+  }
+`
+
 export default {
   name: 'App',
   data () {
     return {
-      isAuthenticated: !!localStorage.getItem('USER_TOKEN')
+      me: {}
     }
   },
-  methods: {
-    logout () {
-      // remove user token from localstorage
-      localStorage.removeItem('USER_TOKEN')
-
-      // redirect user
-      this.$router.replace('/login')
+  apollo: {
+    me: {
+      query: ME_QUERY
     }
   }
 }

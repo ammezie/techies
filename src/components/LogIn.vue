@@ -28,15 +28,7 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
-
-const LOGIN_MUTATION = gql`
-  mutation LoginMutation($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      token
-    }
-  }
-`
+import { LOGIN_MUTATION } from '@/graphql/mutations'
 
 export default {
   name: 'LogIn',

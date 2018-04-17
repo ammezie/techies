@@ -41,6 +41,14 @@ const apolloProvider = new VueApollo({
   defaultClient: apolloClient
 })
 
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    localStorage.getItem('USER_TOKEN') ? next() : next('/login')
+  } else {
+    next()
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
