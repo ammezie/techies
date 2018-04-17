@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { MEETUP_QUERY } from '@/graphql/queries'
+import { MEETUP_QUERY, ME_QUERY } from '@/graphql/queries'
 import {
   ATTENDING_MEETUP_MUTATION,
   NOT_ATTENDING_MEETUP_MUTATION
@@ -58,11 +58,11 @@ import Menu from '@/components/Menu'
 
 export default {
   name: 'SingleMeetup',
-  props: ['me'],
   components: { Menu },
   data () {
     return {
-      meetup: {}
+      meetup: {},
+      me: {}
     }
   },
   computed: {
@@ -80,6 +80,9 @@ export default {
           id: this.$route.params.id
         }
       }
+    },
+    me: {
+      query: ME_QUERY
     }
   },
   methods: {

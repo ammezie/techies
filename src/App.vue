@@ -13,56 +13,14 @@
       </div>
     </nav>
     <div style="padding-top: 30px; padding-bottom: 30px;">
-      <router-view :me="me"/>
+      <router-view/>
     </div>
   </div>
 </template>
 
 <script>
-import gql from 'graphql-tag'
-
-export const ME_QUERY = gql`
-  query MeQuery {
-    me {
-      id
-      name
-      myMeetups {
-        id
-        title
-        date
-        location
-        attendees {
-          id
-        }
-      }
-      meetupsAttending {
-        id
-        title
-        date
-        location
-        organizer {
-          name
-        }
-        attendees {
-          id
-        }
-      }
-    }
-  }
-`
-
 export default {
-  name: 'App',
-  data () {
-    return {
-      me: {}
-    }
-  },
-  apollo: {
-    me: {
-      query: ME_QUERY
-    }
-  }
+  name: 'App'
 }
 </script>
 
