@@ -42,5 +42,5 @@ yarn dev
 
 ## Acknowledgments
 
-[Graphcool forum](https://www.graph.cool/forum)
-[Graphcool Slack](https://slack.graph.cool)
+* [Graphcool forum](https://www.graph.cool/forum)
+* [Graphcool Slack](https://slack.graph.cool)
