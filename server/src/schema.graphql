@@ -1,4 +1,4 @@
-# import Post from "./generated/prisma.graphql"
+# import Meetup from "./generated/prisma.graphql"
 
 type Query {
   meetups: [Meetup!]!

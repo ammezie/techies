@@ -28,9 +28,7 @@ const meetup = {
   async attending (parent, { id }, ctx, info) {
     const userId = getUserId(ctx)
 
-    const meetupExists = await ctx.db.exists.Meetup({
-      id
-    })
+    const meetupExists = await ctx.db.exists.Meetup({ id })
 
     if (!meetupExists) {
       throw new Error('Sorry, meetup not found!')
@@ -53,8 +51,6 @@ const meetup = {
     )
   },
   async notAttending (parent, { id }, ctx, info) {
-    console.log('here')
-
     const userId = getUserId(ctx)
 
     const meetupExists = await ctx.db.exists.Meetup({
@@ -83,6 +79,4 @@ const meetup = {
   }
 }
 
-module.exports = {
-  meetup
-}
+module.exports = { meetup }

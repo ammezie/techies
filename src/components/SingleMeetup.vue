@@ -20,14 +20,16 @@
           </p>
         </div>
 
-        <h3 class="ui header">Are you going?</h3>
+        <template v-if="isAuthenticated">
+          <h3 class="ui header">Are you going?</h3>
 
-        <button class="ui icon primary button" v-if="attending" @click="notAttendingMeetup" title="I'm not going">
-          <i class="large thumbs down outline icon"></i>
-        </button>
-        <button class="ui icon button" v-else @click="attendingMeetup" title="I'm going">
-          <i class="large thumbs up outline icon"></i>
-        </button>
+          <button class="ui icon primary button" v-if="attending" @click="notAttendingMeetup" title="I'm not going">
+            <i class="large thumbs down outline icon"></i>
+          </button>
+          <button class="ui icon button" v-else @click="attendingMeetup" title="I'm going">
+            <i class="large thumbs up outline icon"></i>
+          </button>
+        </template>
 
         <h3 class="ui header">
           Attendees {{ `(${meetup.attendees.length})` }}
@@ -62,7 +64,8 @@ export default {
   data () {
     return {
       meetup: {},
-      me: {}
+      me: {},
+      isAuthenticated: !!localStorage.getItem('USER_TOKEN')
     }
   },
   computed: {
@@ -87,11 +90,6 @@ export default {
   },
   methods: {
     attendingMeetup () {
-      if (!localStorage.getItem('USER_TOKEN')) {
-        alert('You must be logged in to perform the action.')
-        this.$router.replace('/login')
-      }
-
       this.$apollo
         .mutate({
           mutation: ATTENDING_MEETUP_MUTATION,
@@ -105,11 +103,6 @@ export default {
         .catch(error => console.error(error))
     },
     notAttendingMeetup () {
-      if (!localStorage.getItem('USER_TOKEN')) {
-        alert('You must be logged in to perform the action.')
-        this.$router.replace('/login')
-      }
-
       this.$apollo
         .mutate({
           mutation: NOT_ATTENDING_MEETUP_MUTATION,

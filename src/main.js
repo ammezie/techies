@@ -11,6 +11,7 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+// install the vue-momnet plugin
 Vue.use(require('vue-moment'))
 
 const httpLink = new HttpLink({ uri: 'http://localhost:4000/' })
