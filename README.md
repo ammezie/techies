@@ -24,7 +24,7 @@ Duplicate `.env.example` and rename it `.env`
 Be sure to fill in your Prisma service details in your `.env` file then run:
 
 ```bash
-primsa deploy
+prisma deploy
 ```
 
 And finally, start the application:
@@ -35,7 +35,7 @@ yarn dev
 
 ## Built With
 
-* [Primsa](https://www.prisma.io) - Prisma is a realtime GraphQL database layer
+* [Prisma](https://www.prisma.io) - Prisma is a realtime GraphQL database layer
 * [GraphQL](https://graphql.org) - A query language for your API
 * [Apollo Client](https://www.apollographql.com/client) - Apollo Client is the ultra-flexible, community-driven GraphQL client for React, JavaScript, and native platforms.
 * [GraphQL](https://graphql.org) - A query language for your API
